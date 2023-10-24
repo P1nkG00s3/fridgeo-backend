@@ -1,34 +1,30 @@
+from fastapi_users import fastapi_users, FastAPIUsers
 from pydantic.dataclasses import dataclass
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, FastAPI
 from typing import List
-@dataclass
-class User:
-    id: int
-    username: str
-    name: str
-    age: int
 
-users = [
-    User(1, 'pink', 'Patric', 45),
-    User(2, 'goose', 'John', 46),
-]
+from auth.auth import auth_backend
+from auth.database import User
+from auth.manager import get_user_manager
+from auth.shemas import UserRead, UserCreate
 
-user_router = APIRouter(prefix='/users', tags=['Пользователи'])
+fastapi_users = FastAPIUsers[User, int](
+    get_user_manager,
+    [auth_backend],
+)
 
-@user_router.get('/', name='Все пользователи', response_model=List[User])
-def get_all_uses():
-    return users
+app = FastAPI(title="Fridgeo")
 
 
-@user_router.post('/', name='Добавить пользователя', response_model=User)
-def userAdd(user: User):
-    users.append(user)
-    return user
+app = FastAPI()
+app.include_router(
+    fastapi_users.get_auth_router(auth_backend),
+    prefix="/auth/jwt",
+    tags=["Авторизация"],
+)
 
-
-@user_router.get('/{user_id}', name='Получить пользователя', response_model=User)
-def get_user(user_id: int):
-    for user in users:
-        if user_id == user.id:
-            return user
-    raise HTTPException(status_code=404, detail='User not found')
+app.include_router(
+    fastapi_users.get_register_router(UserRead, UserCreate),
+    prefix="/auth",
+    tags=["Авторизация"],
+)
