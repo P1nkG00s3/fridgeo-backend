@@ -8,9 +8,8 @@ from fastapi_users.schemas import PYDANTIC_V2
 class UserRead(schemas.BaseUser[int]):
     id: int
     email: str
-    role_id: int
-    name: int
-    surname: int
+    name: str
+    surname: str
     is_active: bool = True
     is_superuser: bool = False
     is_verified: bool = False
@@ -21,7 +20,7 @@ class UserRead(schemas.BaseUser[int]):
 class UserCreate(schemas.BaseUserCreate):
     email: str
     password: str
-    role_id: int
+    sex: str
     name: str
     surname: str
     is_active: Optional[bool] = True
