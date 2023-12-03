@@ -62,18 +62,18 @@ services:
     depends_on:
       - db
       - redis
-  nginx:
-    restart: always
-    image: nginx
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile
-    env_file:
-      - .env-non-dev
-    ports:
-      - 80:80
-    depends_on:
-      - app
+#  nginx:
+#    restart: always
+#    image: nginx
+#    build:
+#      context: ./nginx
+#      dockerfile: Dockerfile
+#    env_file:
+#      - .env-non-dev
+#    ports:
+#      - 80:80
+#    depends_on:
+#      - app
 
 volumes:
   postgres-data:
