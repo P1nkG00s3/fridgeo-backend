@@ -56,9 +56,9 @@ services:
     container_name: fridgeo
     volumes:
       - postgres-data:/var/lib/postgresql/data
-    command: bash -c "alembic upgrade head && gunicorn main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind=0.0.0.0:8000"
-#    ports:
-#      - 9999:8000
+    command: bash -c "alembic upgrade head && gunicorn main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind=0.0.0.0:8000 --timeout 90"
+    ports:
+      - 9999:8000
     depends_on:
       - db
       - redis
