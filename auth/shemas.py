@@ -1,9 +1,11 @@
 import uuid
+from datetime import date, datetime
 from typing import Optional
 import re
 from fastapi_users import schemas
 from fastapi_users.schemas import PYDANTIC_V2
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, validator
+from models.models import Base
 
 
 class UserRead(schemas.BaseUser[int]):
@@ -18,11 +20,12 @@ class UserRead(schemas.BaseUser[int]):
     class Config:
         orm_mode = True
 
+
 class UserCreate(schemas.BaseUserCreate):
     email: str
 
     # Define a validator for the email field
-    @field_validator("email")
+    @validator("email")
     def check_email(cls, value):
         # use a regex to check that the email has a valid format
         email_regex = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
@@ -32,7 +35,7 @@ class UserCreate(schemas.BaseUserCreate):
 
     password: str
 
-    @field_validator("password")
+    @validator("password")
     def check_password(cls, value):
         # convert the password to a string if it is not already
         value = str(value)
@@ -54,5 +57,31 @@ class UserCreate(schemas.BaseUserCreate):
     is_superuser: Optional[bool] = False
     is_verified: Optional[bool] = False
 
+
 class UserUpdate(schemas.BaseUserUpdate):
     pass
+
+
+class Product(BaseModel):
+    name: str
+    category: str
+    amount: int
+    start_date: date
+    expiration_date: date
+
+    @validator("start_date")
+    def validate_start_date(cls, value):
+        # Добавляем проверку на корректность введенной даты
+        if value > date.today():
+            raise ValueError("Дата изготовления продукта не может быть в будущем")
+        return value
+
+    @validator("expiration_date")
+    def validate_expiration_date(cls, value):
+        # Добавляем проверку на корректность введенной даты
+        if value < date.today():
+            raise ValueError("Дата истечения срока годности не может быть в прошлом")
+        return value
+
+    class Config:
+        orm_mode = True
