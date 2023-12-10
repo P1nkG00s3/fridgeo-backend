@@ -12,4 +12,5 @@ fastapi_cache2
 gunicorn==19.9.0
 unicorn
 uvicorn
+sqlmodel
 fastapi_users
