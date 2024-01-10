@@ -1,0 +1,79 @@
+version: "3.7"
+
+services:
+  db:
+    image: postgres:15
+    restart: always
+    container_name: db_app
+#    env_file:
+#     - .env-non-dev
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+    command:
+      -p 5432
+    expose:
+      - 5432
+    volumes:
+      - ./2. Init Database:/var/lib/docker-entrypoint-initdb.d
+      - ./postgres-data:/var/lib/postgresql/data/
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+
+  redis:
+    image: redis:7
+    container_name: redis_app
+    restart: always
+    command:
+      --port 6379
+    expose:
+      - 6379
+
+
+  app:
+    build:
+      context: .
+#    env_file:
+#      - .env-non-dev
+    restart: always
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=postgres
+      - DB_USER=postgres
+      - DB_PASS=postgres
+    container_name: fridgeo
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    command: bash -c "alembic upgrade head && gunicorn main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind=0.0.0.0:8000 --timeout 90"
+    ports:
+      - 9999:8000
+    depends_on:
+      - db
+      - redis
+#  nginx:
+#    restart: always
+#    image: nginx
+#    build:
+#      context: ./nginx
+#      dockerfile: Dockerfile
+#    env_file:
+#      - .env-non-dev
+#    ports:
+#      - 80:80
+#    depends_on:
+#      - app
+
+volumes:
+  postgres-data:

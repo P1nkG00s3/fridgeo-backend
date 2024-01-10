@@ -1,0 +1,8 @@
+DB_HOST=dpg-clhk2m6bbf9s73b1n230-a
+DB_PORT=5432
+DB_NAME=postgres_db_xq2o
+DB_USER=postgres_user
+DB_PASS=KxkcJZKJMLO0NNAweJdOoMj7bNtN8QP8
+
+REDIS_HOST=red-clm71lkjtl8s73ah2h40
+REDIS_PORT=6379
