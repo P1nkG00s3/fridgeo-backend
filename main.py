@@ -29,6 +29,8 @@ from auth.auth import auth_backend
 from auth.database import User
 from auth.manager import get_user_manager
 from auth.shemas import UserRead, UserCreate
+from fastapi.middleware.cors import CORSMiddleware
+
 
 fastapi_users = FastAPIUsers[User, int](
     get_user_manager,
@@ -36,6 +38,22 @@ fastapi_users = FastAPIUsers[User, int](
 )
 
 app = FastAPI(title="Fridgeo")
+
+origins = [
+    "http://localhost.tiangolo.com",
+    "https://localhost.tiangolo.com",
+    "http://localhost",
+    "http://localhost:8080",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 app.include_router(
     fastapi_users.get_auth_router(auth_backend),
