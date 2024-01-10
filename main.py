@@ -42,6 +42,7 @@ app = FastAPI(title="Fridgeo")
 origins = [
     "http://localhost:60862",
     "http://localhost:8080",
+    "http://localhost",
 ]
 
 app.add_middleware(
