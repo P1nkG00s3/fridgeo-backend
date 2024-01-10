@@ -40,9 +40,7 @@ fastapi_users = FastAPIUsers[User, int](
 app = FastAPI(title="Fridgeo")
 
 origins = [
-    "http://localhost.tiangolo.com",
-    "https://localhost.tiangolo.com",
-    "http://localhost",
+    "http://localhost:60862",
     "http://localhost:8080",
 ]
 
