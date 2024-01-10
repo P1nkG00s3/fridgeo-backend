@@ -74,11 +74,6 @@ def protected_route(user: User = Depends(current_user)):
     return f"Hello, {user.name}"
 
 
-@app.get("/good-man", tags=['Хороший человек'])
-def good_man():
-    return 'Федя гей'
-
-
 @app.post('/products', tags=['Products'])
 async def add_product(product: SchemaProduct, current_user: User = Depends((current_user))):
     if not current_user:
