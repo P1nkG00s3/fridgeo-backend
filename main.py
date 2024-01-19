@@ -154,7 +154,3 @@ async def delete_product_by_id(product_id: int, current_user: User = Depends(cur
 #         "error": "Wrong login details!"
 #     }
 #
-
-@app.get('/good-man', tags=['Gay'])
-def good_man():
-    return f"Федя гей"
